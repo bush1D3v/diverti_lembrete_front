@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onUnmounted } from "vue";
 import logoURL from "@/assets/logo.svg";
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
@@ -9,17 +9,7 @@ function toggleMenu() {
     localStorage.setItem("is_expanded", is_expanded.value.toString());
 }
 
-const currentTime = ref(new Date().toLocaleTimeString());
-
-function updateClock() {
-    currentTime.value = new Date().toLocaleTimeString();
-}
-
 let intervalId: number;
-
-onMounted(() => {
-    intervalId = setInterval(updateClock, 1000);
-});
 
 onUnmounted(() => {
     clearInterval(intervalId);
@@ -40,7 +30,7 @@ onUnmounted(() => {
 
         <h3>Menu</h3>
         <div class="menu">
-            <router-link to="/" class="button">
+            <router-link to="/home" class="button">
                 <span class="material-icons">home</span>
                 <span class="text">Página Inicial</span>
             </router-link>
@@ -63,7 +53,7 @@ onUnmounted(() => {
         <div class="menu">
             <router-link to="/settings" class="button">
                 <span class="material-icons">settings</span>
-                <span class="text">Settings</span>
+                <span class="text">Configurações</span>
             </router-link>
         </div>
     </aside>
