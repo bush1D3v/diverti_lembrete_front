@@ -4,14 +4,13 @@
 
 @layer base {
     :root {
-        --primary: #4ade80;
-        --primary-alt: #22c55e;
+        --primary: #f0aa0a;
         --grey: #64748b;
         --dark: #1e293b;
         --dark-alt: #334155;
         --light: #f1f5f9;
         --sidebar-width: 300px;
-        --accent: #d2d7db;
+        --accent: #c5cbcf;
         --gold: #7e7568;
         --background: 0 0% 100%;
         --foreground: 252.2 84% 4.9%;
@@ -89,7 +88,7 @@
         @apply border-border;
     }
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background;
     }
 }
 
