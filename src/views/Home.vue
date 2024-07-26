@@ -1,43 +1,71 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useReminderStore } from "@/stores/reminderStore";
-import remindersList from "@/api/remindersList";
+import { reminderCheck, reminderList } from "@/api";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { EmotionsEnum } from "@/enum/EmotionsEnum";
-import { CheckCircledIcon, CrossCircledIcon } from "@radix-icons/vue";
+import CrossCheckIcon from "@/components/CrossCheckIcon.vue";
+import WhatsAppIcon from "@/components/WhatsAppIcon.vue";
+import TrashIcon from "@/components/TrashIcon.vue";
+import Pagination from "@/components/Pagination.vue";
+import ReminderSkeleton from "@/components/ReminderSkeleton.vue";
+
+const route = useRoute();
+const router = useRouter();
 
 const reminderStore = useReminderStore();
 
+const page = ref(route.query.page);
+const total = ref(0);
+
+async function updatePage(value: number) {
+    router.push({ query: { ...route.query, page: value.toString() } });
+    reminderStore.reminders = [];
+    total.value = (await reminderList(value, router)) as number;
+}
+
 onMounted(async () => {
     if (reminderStore.reminders.length > 0) return;
-    remindersList();
+    total.value = (await reminderList(Number(page.value) || 1, router)) as number;
+});
+
+onBeforeRouteLeave(() => {
+    reminderStore.reminders = [];
 });
 </script>
 
 <template>
-    <div class="flex justify-center items-center w-full">
-        <ul class="text-light grid grid-cols-5 justify-center grid-rows-2 gap-20">
-            <RouterLink
+    <div class="flex flex-col justify-around items-center h-[95dvh] w-full">
+        <ReminderSkeleton v-if="reminderStore.reminders.length === 0" />
+        <ul v-else class="text-light grid grid-cols-5 justify-center grid-rows-2 gap-20">
+            <li
                 v-for="reminder in reminderStore.reminders"
                 :key="reminder.id"
-                :to="`/reminder/${reminder.id}`"
+                class="group flex flex-col relative bg-dark p-3 gap-3 w-56 h-56 shadow-2xl shadow-slate-600 rounded-md"
             >
-                <li
-                    class="flex flex-col relative bg-dark p-3 gap-3 w-56 h-56 hover:shadow-none hover:bg-opacity-90 border-2 border-transparent hover:border-blue-500 shadow-2xl shadow-slate-600 rounded-md ease-in-out duration-75"
-                >
-                    <CheckCircledIcon
-                        class="w-5 h-5 text-green-500 absolute right-2 top-2"
-                        v-if="reminder.check"
-                    />
-                    <CrossCircledIcon
-                        class="w-5 h-5 text-red-500 absolute right-2 top-2"
-                        v-if="!reminder.check"
-                    />
-                    <div
-                        class="w-12 h-2 rounded-full"
-                        :class="EmotionsEnum.findEmotionColor(reminder.emotion)"
-                    />
-                    <h3 class="line-clamp-4">{{ reminder.text }}</h3>
-                    <p class="absolute bottom-3 left-3">
+                <CrossCheckIcon
+                    :checked="reminder.check"
+                    :function="reminderCheck"
+                    :id="reminder.id"
+                    :tooltip="
+                        reminder.check
+                            ? 'Marcar como \'não concluído\''
+                            : 'Marcar como \'concluído\''
+                    "
+                />
+                <div
+                    class="w-12 h-2 rounded-full"
+                    :class="EmotionsEnum.getBackgroundEmotion(reminder.emotion)"
+                />
+                <RouterLink :to="`/reminder/${reminder.id}`">
+                    <h3
+                        class="line-clamp-4 hover:underline hover:text-blue-500 ease-in-out duration-75"
+                    >
+                        {{ reminder.text }}
+                    </h3>
+                </RouterLink>
+                <div class="absolute left-0 bottom-0 w-full p-3 flex justify-between items-end">
+                    <p class="">
                         {{
                             new Date(reminder.date).toLocaleDateString("pt-BR", {
                                 year: "2-digit",
@@ -46,8 +74,19 @@ onMounted(async () => {
                             })
                         }}
                     </p>
-                </li>
-            </RouterLink>
+                    <div class="flex gap-2 -mb-1">
+                        <WhatsAppIcon :text-class="'text-lg mt-1'" :text="reminder.text" />
+                        <TrashIcon
+                            :total="total"
+                            :text-class="'text-2xl'"
+                            :id="reminder.id"
+                            :router="router"
+                            :route="route"
+                        />
+                    </div>
+                </div>
+            </li>
         </ul>
+        <Pagination :total="total" :page="Number(page)" @update:page="updatePage($event)" />
     </div>
 </template>
