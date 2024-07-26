@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CreateReminderCard from "@/components/CreateReminderCard.vue";
+</script>
 
 <template>
-    <h1 class="text-center text-4xl">CRIE UM LEMBRETE</h1>
+    <div class="flex flex-col items-center justify-center gap-10 min-h-[95dvh] w-full">
+        <CreateReminderCard />
+    </div>
 </template>
