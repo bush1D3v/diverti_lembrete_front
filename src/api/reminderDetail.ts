@@ -5,7 +5,7 @@ interface ReminderResponse {
     data: Reminder;
 }
 
-export default async function remindersList(id: string): Promise<ReminderResponse | undefined> {
+export default async function reminderDetail(id: string): Promise<ReminderResponse | undefined> {
     try {
         const response = await fetch(`http://localhost:8888/reminders/${id}`, {
             method: "GET",
@@ -18,7 +18,7 @@ export default async function remindersList(id: string): Promise<ReminderRespons
             throw new Error("Failed to fetch");
         }
 
-        return await response.json() as ReminderResponse;
+        return (await response.json()) as ReminderResponse;
     } catch (error) {
         console.error("Error fetching data:", error);
     }

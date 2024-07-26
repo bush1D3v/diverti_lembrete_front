@@ -12,9 +12,10 @@ interface ReminderResponse {
     data: Reminders;
 }
 
-export default async function remindersList() {
+export default async function reminderPush(page: number): Promise<void> {
     try {
-        const response = await fetch(`http://localhost:8888/reminders`, {
+        const offset = ((page - 1) * 10) + 9;
+        const response = await fetch(`http://localhost:8888/reminders?limit=1&offset=${offset}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
