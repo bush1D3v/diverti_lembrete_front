@@ -37,6 +37,10 @@ export class RoutesEnum {
         let closestMatchLength = Infinity;
         let highestSimilarityScore = -1;
 
+        if (input === "" || input === undefined || input === null) {
+            return "";
+        }
+
         for (const text of Object.values(RoutesEnum.TextExhibitionList)) {
             const lowerCaseText = text.toLowerCase();
             const lowerCaseInput = input.toLowerCase();
@@ -54,8 +58,11 @@ export class RoutesEnum {
             }
 
             const lengthDifference = Math.abs(input.length - text.length);
-            if (similarityScore > highestSimilarityScore ||
-                (similarityScore === highestSimilarityScore && lengthDifference < closestMatchLength)) {
+            if (
+                similarityScore > highestSimilarityScore ||
+                (similarityScore === highestSimilarityScore &&
+                    lengthDifference < closestMatchLength)
+            ) {
                 closestMatch = text;
                 closestMatchLength = lengthDifference;
                 highestSimilarityScore = similarityScore;
@@ -86,15 +93,15 @@ export class RoutesEnum {
         [ RoutesEnum.reminderCreateMatch ]: "/reminders/create",
         [ RoutesEnum.reminderMatch ]: "/reminders",
         [ RoutesEnum.settingsMatch ]: "/settings",
-        [ RoutesEnum.angryMatch ]: "/reminders/angry",
-        [ RoutesEnum.sadMatch ]: "/reminders/sad",
-        [ RoutesEnum.envyMatch ]: "/reminders/envy",
-        [ RoutesEnum.disgustMatch ]: "/reminders/disgust",
-        [ RoutesEnum.happinessMatch ]: "/reminders/happiness",
-        [ RoutesEnum.fearMatch ]: "/reminders/fear",
-        [ RoutesEnum.shameMatch ]: "/reminders/shame",
-        [ RoutesEnum.boredomMatch ]: "/reminders/boredom",
-        [ RoutesEnum.anxietyMatch ]: "/reminders/anxiety",
+        [ RoutesEnum.angryMatch ]: "/reminders/angry?page=1",
+        [ RoutesEnum.sadMatch ]: "/reminders/sad?page=1",
+        [ RoutesEnum.envyMatch ]: "/reminders/envy?page=1",
+        [ RoutesEnum.disgustMatch ]: "/reminders/disgust?page=1",
+        [ RoutesEnum.happinessMatch ]: "/reminders/happiness?page=1",
+        [ RoutesEnum.fearMatch ]: "/reminders/fear?page=1",
+        [ RoutesEnum.shameMatch ]: "/reminders/shame?page=1",
+        [ RoutesEnum.boredomMatch ]: "/reminders/boredom?page=1",
+        [ RoutesEnum.anxietyMatch ]: "/reminders/anxiety?page=1"
     };
 
     public static findClosestRouteMatch(input: string): string {
