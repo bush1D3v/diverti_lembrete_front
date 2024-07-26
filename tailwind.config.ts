@@ -1,10 +1,6 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: [ "class" ],
-  safelist: [ "dark" ],
-  prefix: "",
-
   content: [
     './pages/**/*.{ts,tsx,vue}',
     './components/**/*.{ts,tsx,vue}',
@@ -40,7 +36,6 @@ const config: Config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primaryAlt: "var(--primary-alt)",
         grey: "var(--grey)",
         primary: {
           DEFAULT: "var(--primary)",
